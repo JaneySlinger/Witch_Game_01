@@ -1,6 +1,7 @@
 import arcade
 import random
 #import witch
+#from sprite import Sprite
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -8,7 +9,7 @@ HERB_COUNT = 10
 TREE_COUNT = 10
 SPRITE_SCALING_WITCH = 1.0
 SPRITE_SCALING_HERB = 1.0
-SPRITE_SCALING_TREE = 3.0
+SPRITE_SCALING_TREE = 2.5
 MOVEMENT_SPEED = 5
 
 
@@ -32,10 +33,12 @@ class WitchGame(arcade.Window):
         self.score = 0
 
         # set up the player
+
         self.player_sprite = arcade.Sprite(
             "../sprites/Witch_Sprite/witch_front.png", SPRITE_SCALING_WITCH)
         self.player_sprite.center_x = 50  # starting position
         self.player_sprite.center_y = 50
+
         self.player_list.append(self.player_sprite)
 
         # create the coins
@@ -73,6 +76,10 @@ class WitchGame(arcade.Window):
         self.player_list.draw()
         self.herb_list.draw()
         self.tree_list.draw()
+        if(self.score == HERB_COUNT):
+            arcade.draw_text("You won!", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, arcade.color.BLACK, 24,
+                             align="center", anchor_x="center", anchor_y="center"
+                             )
 
     def update(self, delta_time):
         """ All the logic to move, and the game logic goes here"""
@@ -91,11 +98,15 @@ class WitchGame(arcade.Window):
         """Called whenever a key is pressed"""
         if key == arcade.key.UP:
             self.player_sprite.change_y = MOVEMENT_SPEED
+
         elif key == arcade.key.DOWN:
             self.player_sprite.change_y = -MOVEMENT_SPEED
+
         elif key == arcade.key.LEFT:
             self.player_sprite.change_x = -MOVEMENT_SPEED
+
         elif key == arcade.key.RIGHT:
+
             self.player_sprite.change_x = MOVEMENT_SPEED
 
     def on_key_release(self, key, modifiers):
