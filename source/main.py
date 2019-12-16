@@ -19,7 +19,7 @@ class WitchGame(arcade.Window):
     def __init__(self, width, height):
         super().__init__(width, height)
 
-        arcade.set_background_color(arcade.color.AFRICAN_VIOLET)
+        arcade.set_background_color(arcade.color.MOSS_GREEN)
 
     def setup(self):
         # set up game here...
