@@ -8,6 +8,7 @@ HERB_COUNT = 10
 TREE_COUNT = 10
 SPRITE_SCALING_WITCH = 1.0
 SPRITE_SCALING_HERB = 1.0
+SPRITE_SCALING_TREE = 3.0
 MOVEMENT_SPEED = 5
 
 
@@ -53,7 +54,7 @@ class WitchGame(arcade.Window):
         for i in range(TREE_COUNT):
             # create tree instance
             tree = arcade.Sprite(
-                "../sprites/Shikashi's_Fantasy_Icons_Pack/SingleSprites/octopus.png", SPRITE_SCALING_HERB)
+                "../sprites/Witch_Sprite/tree.png", SPRITE_SCALING_TREE)
             # position the tree
             tree.center_x = random.randrange(SCREEN_WIDTH)
             tree.center_y = random.randrange(SCREEN_HEIGHT)
