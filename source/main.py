@@ -3,8 +3,8 @@ import random
 # import witch
 # from sprite import Sprite
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1024
+SCREEN_HEIGHT = 640
 HERB_COUNT = 10
 TREE_COUNT = 10
 SPRITE_SCALING_WITCH = 1.0
@@ -12,6 +12,7 @@ SPRITE_SCALING_HERB = 1.0
 SPRITE_SCALING_TREE = 2.5
 MOVEMENT_SPEED = 5
 SPRITE_SIZE_TREE = int(32 * SPRITE_SCALING_TREE)
+TILE_SCALING = 1
 
 
 class Area:
@@ -32,15 +33,28 @@ def setup_area_1():
     # sprite lists
     area.tree_list = arcade.SpriteList()
 
-    # set up the 'walls'
-    for y in (0, SCREEN_HEIGHT - SPRITE_SIZE_TREE):
-        for x in range(0, SCREEN_WIDTH, SPRITE_SIZE_TREE):
-            tree = arcade.Sprite(
-                "../sprites/Witch_Sprite/tree.png", SPRITE_SCALING_TREE)
-            tree.left = x
-            tree.bottom = y
-            area.tree_list.append(tree)
+    # load in tiled map
+    map_name = "../maps/map1.tmx"
+    # name of the layer in the file that has platforms/walls
+    platforms_layer_name = 'walls2'
 
+    # read in the tiled map
+    my_map = arcade.tilemap.read_tmx(map_name)
+
+    # platforms
+    area.tree_list = arcade.tilemap.process_layer(
+        my_map, platforms_layer_name, TILE_SCALING)
+
+    # # set up the 'walls'
+    # for y in (0, SCREEN_HEIGHT - SPRITE_SIZE_TREE):
+    #     for x in range(0, SCREEN_WIDTH, SPRITE_SIZE_TREE):
+    #         tree = arcade.Sprite(
+    #             "../sprites/Witch_Sprite/tree.png", SPRITE_SCALING_TREE)
+    #         tree.left = x
+    #         tree.bottom = y
+    #         area.tree_list.append(tree)
+    # if my_map.background_color:
+    #     arcade.set_background_color(my_map.background_color)
     return area
 
 
