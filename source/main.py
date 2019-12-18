@@ -148,6 +148,15 @@ class InventoryView(arcade.View):
         items = self.game_view.found_items
         items.draw()
 
+        inv_map = "../maps/inventory.tmx"
+        inventory_layer_name = 'target'
+
+        inv_map = arcade.tilemap.read_tmx(inv_map)
+
+        target_list = arcade.tilemap.process_layer(
+            inv_map, inventory_layer_name, TILE_SCALING)
+        target_list.draw()
+
     def on_key_press(self, key, modifiers):
         if key == arcade.key.ESCAPE:
             self.window.show_view(self.game_view)
