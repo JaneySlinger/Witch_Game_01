@@ -50,13 +50,8 @@ def setup_area_1():
     return area
 
 
-class WitchGame(arcade.Window):
+class WitchGame(arcade.View):
     """ Main application class"""
-
-    def __init__(self, width, height):
-        super().__init__(width, height)
-
-        arcade.set_background_color(arcade.color.MOSS_GREEN)
 
     def setup(self):
         # create the sprite lists
@@ -122,8 +117,10 @@ class WitchGame(arcade.Window):
             self.player_sprite.change_x = -MOVEMENT_SPEED
 
         elif key == arcade.key.RIGHT:
-
             self.player_sprite.change_x = MOVEMENT_SPEED
+        elif key == arcade.key.ESCAPE:
+            inventory = InventoryView(self)
+            self.window.show_view(inventory)
 
     def on_key_release(self, key, modifiers):
         """called whenever user releases a key"""
@@ -133,9 +130,32 @@ class WitchGame(arcade.Window):
             self.player_sprite.change_x = 0
 
 
+class InventoryView(arcade.View):
+    def __init__(self, game_view):
+        super().__init__()
+        self.game_view = game_view
+
+    def on_show(self):
+        arcade.set_background_color(arcade.color.ORANGE)
+
+    def on_draw(self):
+        arcade.start_render()
+        # draw player, for effect, on pause screen
+        # the previous view (GameView) was passed in and saved in self.game_view
+        player_sprite = self.game_view.player_sprite
+        player_sprite.draw()
+
+    def on_key_press(self, key, modifiers):
+        if key == arcade.key.ESCAPE:
+            self.window.show_view(self.game_view)
+
+
 def main():
-    game = WitchGame(SCREEN_WIDTH, SCREEN_HEIGHT)
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, 'Witch Game')
+    game = WitchGame()
+    #game = WitchGame(SCREEN_WIDTH, SCREEN_HEIGHT)
     game.setup()
+    window.show_view(game)
     arcade.run()
 
 
