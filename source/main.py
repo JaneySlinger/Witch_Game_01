@@ -6,6 +6,7 @@ import random
 SCREEN_WIDTH = 1024
 SCREEN_HEIGHT = 640
 HERB_COUNT = 10
+WIN_SCORE = 7
 TREE_COUNT = 10
 SPRITE_SCALING_WITCH = 1.0
 SPRITE_SCALING_HERB = 1.0
@@ -21,6 +22,7 @@ class Area:
     def __init__(self):
         # lists for coins, walls, monsters, etc
         self.tree_list = None
+        self.item_list = None
         # holds backgrounds images. Can delete if don't want changing backgrounds.
         self.background = None
 
@@ -32,11 +34,13 @@ def setup_area_1():
     """ set up the game and initialise the variables"""
     # sprite lists
     area.tree_list = arcade.SpriteList()
+    area.item_list = arcade.SpriteList()
 
     # load in tiled map
     map_name = "../maps/map1.tmx"
     # name of the layer in the file that has platforms/walls
     platforms_layer_name = 'walls2'
+    items_layer_name = 'items'
 
     # read in the tiled map
     my_map = arcade.tilemap.read_tmx(map_name)
@@ -45,6 +49,8 @@ def setup_area_1():
     area.tree_list = arcade.tilemap.process_layer(
         my_map, platforms_layer_name, TILE_SCALING)
 
+    area.item_list = arcade.tilemap.process_layer(
+        my_map, items_layer_name, TILE_SCALING)
     # # set up the 'walls'
     # for y in (0, SCREEN_HEIGHT - SPRITE_SIZE_TREE):
     #     for x in range(0, SCREEN_WIDTH, SPRITE_SIZE_TREE):
@@ -71,7 +77,7 @@ class WitchGame(arcade.Window):
 
         # create the sprite lists
         self.player_list = arcade.SpriteList()
-        self.herb_list = arcade.SpriteList()
+        #self.herb_list = arcade.SpriteList()
         # self.tree_list = arcade.SpriteList()
 
         # set up the score
@@ -87,28 +93,16 @@ class WitchGame(arcade.Window):
         self.player_list.append(self.player_sprite)
 
         # create the coins
-        for i in range(HERB_COUNT):
-            # create herb instance
-            herb = arcade.Sprite(
-                "../sprites/Shikashi's_Fantasy_Icons_Pack/SingleSprites/herb1.png", SPRITE_SCALING_HERB)
-            # position the herb
-            herb.center_x = random.randrange(SCREEN_WIDTH)
-            herb.center_y = random.randrange(SCREEN_HEIGHT)
-
-            # add herb to the list
-            self.herb_list.append(herb)
-
-        # set up trees
-        # for i in range(TREE_COUNT):
-        #     # create tree instance
-        #     tree = arcade.Sprite(
-        #         "../sprites/Witch_Sprite/tree.png", SPRITE_SCALING_TREE)
-        #     # position the tree
-        #     tree.center_x = random.randrange(SCREEN_WIDTH)
-        #     tree.center_y = random.randrange(SCREEN_HEIGHT)
+        # for i in range(HERB_COUNT):
+        #     # create herb instance
+        #     herb = arcade.Sprite(
+        #         "../sprites/Shikashi's_Fantasy_Icons_Pack/SingleSprites/herb1.png", SPRITE_SCALING_HERB)
+        #     # position the herb
+        #     herb.center_x = random.randrange(SCREEN_WIDTH)
+        #     herb.center_y = random.randrange(SCREEN_HEIGHT)
         #
-        #     # add tree to the list
-        #     self.tree_list.append(tree)
+        #     # add herb to the list
+        #     self.herb_list.append(herb)
 
         self.areas = []
         area = setup_area_1()
@@ -119,18 +113,16 @@ class WitchGame(arcade.Window):
         # set up physics engine
         self.physics_engine = arcade.PhysicsEngineSimple(
             self.player_sprite, self.areas[self.current_area].tree_list)
-        # self.physics_engine = arcade.PhysicsEngineSimple(
-        #     self.player_sprite, self.tree_list)
 
     def on_draw(self):
         """Render the screen"""
         arcade.start_render()
         # drawing code goes here
         self.player_list.draw()
-        self.herb_list.draw()
+        # self.herb_list.draw()
+        self.areas[self.current_area].item_list.draw()
         self.areas[self.current_area].tree_list.draw()
-        # self.tree_list.draw()
-        if(self.score == HERB_COUNT):
+        if(self.score == WIN_SCORE):
             arcade.draw_text("You won!", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, arcade.color.BLACK, 24,
                              align="center", anchor_x="center", anchor_y="center"
                              )
@@ -138,13 +130,19 @@ class WitchGame(arcade.Window):
     def update(self, delta_time):
         """ All the logic to move, and the game logic goes here"""
         # generate list of all herb sprites that collided with the player
-        herbs_hit_list = arcade.check_for_collision_with_list(
-            self.player_sprite, self.herb_list)
+        # herbs_hit_list = arcade.check_for_collision_with_list(
+        #     self.player_sprite, self.herb_list)
+
+        item_hit_list = arcade.check_for_collision_with_list(
+            self.player_sprite, self.areas[self.current_area].item_list)
+        for item in item_hit_list:
+            item.kill()
+            self.score += 1
 
         # loop through each colliding sprite, remove it, and add to the score
-        for herb in herbs_hit_list:
-            herb.kill()
-            self.score += 1
+        # for herb in herbs_hit_list:
+        #     herb.kill()
+        #     self.score += 1
 
         self.physics_engine.update()
 
