@@ -33,6 +33,7 @@ def setup_area_1():
 
     area.tree_list = arcade.SpriteList()
     area.item_list = arcade.SpriteList()
+    area.background_list = arcade.SpriteList()
 
     # load in tiled map
     map_name = "../maps/map1.tmx"
@@ -47,20 +48,19 @@ def setup_area_1():
     area.item_list = arcade.tilemap.process_layer(
         my_map, items_layer_name, TILE_SCALING)
 
+    area.background_list = arcade.tilemap.process_layer(
+        my_map, 'background', TILE_SCALING)
+
     return area
 
 
-class WitchGame(arcade.Window):
+class WitchGame(arcade.View):
     """ Main application class"""
-
-    def __init__(self, width, height):
-        super().__init__(width, height)
-
-        arcade.set_background_color(arcade.color.MOSS_GREEN)
 
     def setup(self):
         # create the sprite lists
         self.player_list = arcade.SpriteList()
+        self.found_items = arcade.SpriteList()
         self.item_collect_sound = arcade.load_sound("../sounds/fire_spell.wav")
         self.win_sound = arcade.load_sound("../sounds/win_sound.wav")
 
@@ -88,6 +88,8 @@ class WitchGame(arcade.Window):
     def on_draw(self):
         """Render the screen"""
         arcade.start_render()
+        # arcade.set_background_color(arcade.color.DARK_PASTEL_GREEN)
+        self.areas[self.current_area].background_list.draw()
         self.player_list.draw()
         self.areas[self.current_area].item_list.draw()
         self.areas[self.current_area].tree_list.draw()
@@ -102,7 +104,9 @@ class WitchGame(arcade.Window):
         item_hit_list = arcade.check_for_collision_with_list(
             self.player_sprite, self.areas[self.current_area].item_list)
         for item in item_hit_list:
-            item.kill()
+            self.found_items.append(item)
+            self.areas[self.current_area].item_list.remove(item)
+
             arcade.play_sound(self.item_collect_sound)
             self.score += 1
 
@@ -120,8 +124,10 @@ class WitchGame(arcade.Window):
             self.player_sprite.change_x = -MOVEMENT_SPEED
 
         elif key == arcade.key.RIGHT:
-
             self.player_sprite.change_x = MOVEMENT_SPEED
+        elif key == arcade.key.ESCAPE:
+            inventory = InventoryView(self)
+            self.window.show_view(inventory)
 
     def on_key_release(self, key, modifiers):
         """called whenever user releases a key"""
@@ -131,9 +137,49 @@ class WitchGame(arcade.Window):
             self.player_sprite.change_x = 0
 
 
+class InventoryView(arcade.View):
+    def __init__(self, game_view):
+        super().__init__()
+        self.game_view = game_view
+
+    def on_draw(self):
+        arcade.start_render()
+        # draw player, for effect, on pause screen
+        # the previous view (GameView) was passed in and saved in self.game_view
+        items = self.game_view.found_items
+        arcade.set_background_color(arcade.color.ASH_GREY)
+
+        inv_map = "../maps/inventory.tmx"
+        inventory_layer_name = 'target'
+
+        inv_map = arcade.tilemap.read_tmx(inv_map)
+
+        target_list = arcade.tilemap.process_layer(
+            inv_map, inventory_layer_name, TILE_SCALING)
+
+        for item in target_list:
+            item.intensity = 'dim'
+            item.alpha = 64
+
+        for item in target_list:
+            for found_item in items:
+                if item.texture == found_item.texture:
+                    item.intensity = 'bright'
+                    item.alpha = 255
+
+        target_list.draw()
+
+    def on_key_press(self, key, modifiers):
+        if key == arcade.key.ESCAPE:
+            self.window.show_view(self.game_view)
+
+
 def main():
-    game = WitchGame(SCREEN_WIDTH, SCREEN_HEIGHT)
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, 'Witch Game')
+    game = WitchGame()
+    #game = WitchGame(SCREEN_WIDTH, SCREEN_HEIGHT)
     game.setup()
+    window.show_view(game)
     arcade.run()
 
 
