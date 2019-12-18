@@ -61,6 +61,7 @@ class WitchGame(arcade.Window):
     def setup(self):
         # create the sprite lists
         self.player_list = arcade.SpriteList()
+        self.found_items = arcade.SpriteList()
         self.item_collect_sound = arcade.load_sound("../sounds/fire_spell.wav")
         self.win_sound = arcade.load_sound("../sounds/win_sound.wav")
 
@@ -102,6 +103,7 @@ class WitchGame(arcade.Window):
         item_hit_list = arcade.check_for_collision_with_list(
             self.player_sprite, self.areas[self.current_area].item_list)
         for item in item_hit_list:
+            self.found_items.append(item)
             item.kill()
             arcade.play_sound(self.item_collect_sound)
             self.score += 1
