@@ -99,7 +99,8 @@ class WitchGame(arcade.View):
             self.player_sprite, self.areas[self.current_area].item_list)
         for item in item_hit_list:
             self.found_items.append(item)
-            item.kill()
+            self.areas[self.current_area].item_list.remove(item)
+
             arcade.play_sound(self.item_collect_sound)
             self.score += 1
 
@@ -144,6 +145,8 @@ class InventoryView(arcade.View):
         # the previous view (GameView) was passed in and saved in self.game_view
         player_sprite = self.game_view.player_sprite
         player_sprite.draw()
+        items = self.game_view.found_items
+        items.draw()
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.ESCAPE:
