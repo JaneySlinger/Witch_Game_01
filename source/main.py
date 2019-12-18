@@ -39,6 +39,7 @@ def setup_area_1():
     map_name = "../maps/map1.tmx"
     platforms_layer_name = 'walls2'
     items_layer_name = 'items'
+    background_layer_name = 'background'
 
     my_map = arcade.tilemap.read_tmx(map_name)
 
@@ -49,8 +50,7 @@ def setup_area_1():
         my_map, items_layer_name, TILE_SCALING)
 
     area.background_list = arcade.tilemap.process_layer(
-        my_map, 'background', TILE_SCALING)
-
+        my_map, background_layer_name, TILE_SCALING)
     return area
 
 
@@ -71,7 +71,7 @@ class WitchGame(arcade.View):
         self.player_sprite = arcade.Sprite(
             "../sprites/Witch_Sprite/witch_front.png", SPRITE_SCALING_WITCH)
         self.player_sprite.center_x = 100  # starting position
-        self.player_sprite.center_y = 150
+        self.player_sprite.center_y = 300
 
         self.player_list.append(self.player_sprite)
 
@@ -88,7 +88,6 @@ class WitchGame(arcade.View):
     def on_draw(self):
         """Render the screen"""
         arcade.start_render()
-        # arcade.set_background_color(arcade.color.DARK_PASTEL_GREEN)
         self.areas[self.current_area].background_list.draw()
         self.player_list.draw()
         self.areas[self.current_area].item_list.draw()
