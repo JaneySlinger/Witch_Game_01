@@ -28,39 +28,25 @@ class Area:
 
 
 def setup_area_1():
-    """create and return room 1."""
+    """create and return area 1."""
     area = Area()
 
-    """ set up the game and initialise the variables"""
-    # sprite lists
     area.tree_list = arcade.SpriteList()
     area.item_list = arcade.SpriteList()
 
     # load in tiled map
     map_name = "../maps/map1.tmx"
-    # name of the layer in the file that has platforms/walls
     platforms_layer_name = 'walls2'
     items_layer_name = 'items'
 
-    # read in the tiled map
     my_map = arcade.tilemap.read_tmx(map_name)
 
-    # platforms
     area.tree_list = arcade.tilemap.process_layer(
         my_map, platforms_layer_name, TILE_SCALING)
 
     area.item_list = arcade.tilemap.process_layer(
         my_map, items_layer_name, TILE_SCALING)
-    # # set up the 'walls'
-    # for y in (0, SCREEN_HEIGHT - SPRITE_SIZE_TREE):
-    #     for x in range(0, SCREEN_WIDTH, SPRITE_SIZE_TREE):
-    #         tree = arcade.Sprite(
-    #             "../sprites/Witch_Sprite/tree.png", SPRITE_SCALING_TREE)
-    #         tree.left = x
-    #         tree.bottom = y
-    #         area.tree_list.append(tree)
-    # if my_map.background_color:
-    #     arcade.set_background_color(my_map.background_color)
+
     return area
 
 
@@ -73,36 +59,21 @@ class WitchGame(arcade.Window):
         arcade.set_background_color(arcade.color.MOSS_GREEN)
 
     def setup(self):
-        # set up game here...
-
         # create the sprite lists
         self.player_list = arcade.SpriteList()
-        #self.herb_list = arcade.SpriteList()
-        # self.tree_list = arcade.SpriteList()
+        self.item_collect_sound = arcade.load_sound("../sounds/fire_spell.wav")
+        self.win_sound = arcade.load_sound("../sounds/win_sound.wav")
 
         # set up the score
         self.score = 0
 
         # set up the player
-
         self.player_sprite = arcade.Sprite(
             "../sprites/Witch_Sprite/witch_front.png", SPRITE_SCALING_WITCH)
         self.player_sprite.center_x = 100  # starting position
         self.player_sprite.center_y = 150
 
         self.player_list.append(self.player_sprite)
-
-        # create the coins
-        # for i in range(HERB_COUNT):
-        #     # create herb instance
-        #     herb = arcade.Sprite(
-        #         "../sprites/Shikashi's_Fantasy_Icons_Pack/SingleSprites/herb1.png", SPRITE_SCALING_HERB)
-        #     # position the herb
-        #     herb.center_x = random.randrange(SCREEN_WIDTH)
-        #     herb.center_y = random.randrange(SCREEN_HEIGHT)
-        #
-        #     # add herb to the list
-        #     self.herb_list.append(herb)
 
         self.areas = []
         area = setup_area_1()
@@ -117,32 +88,23 @@ class WitchGame(arcade.Window):
     def on_draw(self):
         """Render the screen"""
         arcade.start_render()
-        # drawing code goes here
         self.player_list.draw()
-        # self.herb_list.draw()
         self.areas[self.current_area].item_list.draw()
         self.areas[self.current_area].tree_list.draw()
         if(self.score == WIN_SCORE):
+            arcade.play_sound(self.win_sound)
             arcade.draw_text("You won!", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, arcade.color.BLACK, 24,
                              align="center", anchor_x="center", anchor_y="center"
                              )
 
     def update(self, delta_time):
         """ All the logic to move, and the game logic goes here"""
-        # generate list of all herb sprites that collided with the player
-        # herbs_hit_list = arcade.check_for_collision_with_list(
-        #     self.player_sprite, self.herb_list)
-
         item_hit_list = arcade.check_for_collision_with_list(
             self.player_sprite, self.areas[self.current_area].item_list)
         for item in item_hit_list:
             item.kill()
+            arcade.play_sound(self.item_collect_sound)
             self.score += 1
-
-        # loop through each colliding sprite, remove it, and add to the score
-        # for herb in herbs_hit_list:
-        #     herb.kill()
-        #     self.score += 1
 
         self.physics_engine.update()
 
