@@ -84,6 +84,7 @@ class WitchGame(arcade.View):
     def on_draw(self):
         """Render the screen"""
         arcade.start_render()
+        arcade.set_background_color(arcade.color.DARK_PASTEL_GREEN)
         self.player_list.draw()
         self.areas[self.current_area].item_list.draw()
         self.areas[self.current_area].tree_list.draw()
@@ -136,17 +137,12 @@ class InventoryView(arcade.View):
         super().__init__()
         self.game_view = game_view
 
-    def on_show(self):
-        arcade.set_background_color(arcade.color.ORANGE)
-
     def on_draw(self):
         arcade.start_render()
         # draw player, for effect, on pause screen
         # the previous view (GameView) was passed in and saved in self.game_view
-        player_sprite = self.game_view.player_sprite
-        player_sprite.draw()
         items = self.game_view.found_items
-        items.draw()
+        arcade.set_background_color(arcade.color.ASH_GREY)
 
         inv_map = "../maps/inventory.tmx"
         inventory_layer_name = 'target'
@@ -155,6 +151,17 @@ class InventoryView(arcade.View):
 
         target_list = arcade.tilemap.process_layer(
             inv_map, inventory_layer_name, TILE_SCALING)
+
+        for item in target_list:
+            item.intensity = 'dim'
+            item.alpha = 64
+
+        for item in target_list:
+            for found_item in items:
+                if item.texture == found_item.texture:
+                    item.intensity = 'bright'
+                    item.alpha = 255
+
         target_list.draw()
 
     def on_key_press(self, key, modifiers):
