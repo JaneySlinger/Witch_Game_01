@@ -33,6 +33,7 @@ def setup_area_1():
 
     area.tree_list = arcade.SpriteList()
     area.item_list = arcade.SpriteList()
+    area.background_list = arcade.SpriteList()
 
     # load in tiled map
     map_name = "../maps/map1.tmx"
@@ -46,6 +47,9 @@ def setup_area_1():
 
     area.item_list = arcade.tilemap.process_layer(
         my_map, items_layer_name, TILE_SCALING)
+
+    area.background_list = arcade.tilemap.process_layer(
+        my_map, 'background', TILE_SCALING)
 
     return area
 
@@ -84,7 +88,8 @@ class WitchGame(arcade.View):
     def on_draw(self):
         """Render the screen"""
         arcade.start_render()
-        arcade.set_background_color(arcade.color.DARK_PASTEL_GREEN)
+        # arcade.set_background_color(arcade.color.DARK_PASTEL_GREEN)
+        self.areas[self.current_area].background_list.draw()
         self.player_list.draw()
         self.areas[self.current_area].item_list.draw()
         self.areas[self.current_area].tree_list.draw()
