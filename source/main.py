@@ -31,16 +31,19 @@ class WitchGame(arcade.View):
 
         self.player_list.append(self.player_sprite)
 
+        self.area_refs = {}
         self.areas = []
         area = Area(name="forest1", up=None, down=None,
                     left=None, right="forest2")
         area.setup_area("../maps/map1.tmx")
         self.areas.append(area)
+        self.area_refs['forest1'] = 0
 
         area2 = Area(name="forest2", up=None, down=None,
                      left="forest1", right=None)
         area2.setup_area("../maps/map2.tmx")
         self.areas.append(area2)
+        self.area_refs['forest2'] = 1
 
         self.current_area = 0
 
@@ -63,6 +66,7 @@ class WitchGame(arcade.View):
 
     def update(self, delta_time):
         """ All the logic to move, and the game logic goes here"""
+        self.physics_engine.update()
         item_hit_list = arcade.check_for_collision_with_list(
             self.player_sprite, self.areas[self.current_area].item_list)
         for item in item_hit_list:
@@ -72,20 +76,26 @@ class WitchGame(arcade.View):
             arcade.play_sound(self.item_collect_sound)
             self.score += 1
 
-        # Do some logic here to figure out what room we are in, and if we need to go
-        # to a different room.
-        if self.player_sprite.center_x > SCREEN_WIDTH and self.current_area == 0:
-            self.current_area = 1
-            self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite,
-                                                             self.areas[self.current_area].tree_list)
-            self.player_sprite.center_x = 0
-        elif self.player_sprite.center_x < 0 and self.current_area == 1:
-            self.current_area = 0
-            self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite,
-                                                             self.areas[self.current_area].tree_list)
-            self.player_sprite.center_x = SCREEN_WIDTH
-
-        self.physics_engine.update()
+        next_room_check = self.areas[self.current_area].get_next_room_name(
+            self.player_sprite)
+        if next_room_check != None and next_room_check[0] != None:
+            next_room = next_room_check[0]
+            print(next_room)
+            direction_travelled = next_room_check[1]
+            print(direction_travelled)
+            if next_room in self.area_refs:
+                self.current_area = self.area_refs[next_room]
+                print(self.current_area)
+                self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite,
+                                                                 self.areas[self.current_area].tree_list)
+            if direction_travelled == "right":
+                self.player_sprite.center_x = 0
+            elif direction_travelled == "left":
+                self.player_sprite.center_x = SCREEN_WIDTH
+            elif direction_travelled == "up":
+                self.player_sprite.center_y = 0
+            elif direction_travelled == "down":
+                self.player_sprite.center_y = SCREEN_HEIGHT
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed"""

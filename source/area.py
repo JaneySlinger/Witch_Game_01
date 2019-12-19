@@ -1,4 +1,6 @@
 import arcade
+SCREEN_WIDTH = 1024
+SCREEN_HEIGHT = 640
 TILE_SCALING = 1
 
 
@@ -18,9 +20,9 @@ class Area:
         self.left = left
         self.right = right
 
-        wall_layer = "walls"
-        items_layer = "items"
-        background_layer = "background"
+        self.wall_layer = "walls"
+        self.items_layer = "items"
+        self.background_layer = "background"
 
     def setup_area(self, map_name):
         self.tree_list = arcade.SpriteList()
@@ -39,11 +41,11 @@ class Area:
     def get_next_room_name(self, player_sprite):
         # Do some logic here to figure out what room we are in, and if we need to go
         # to a different room.
-        if self.player_sprite.center_x > SCREEN_WIDTH:  # you need to go right
-            return self.right
-        elif self.player_sprite.center_x < SCREEN_WIDTH:
-            return self.left
-        elif self.player_sprite.center_y > SCREEN_HEIGHT:
-            return self.up
-        elif self.player_sprite.center_y < SCREEN_HEIGHT:
-            return self.down
+        if player_sprite.center_x > SCREEN_WIDTH:  # you need to go right
+            return (self.right, "right")
+        elif player_sprite.center_x < 0:
+            return (self.left, "left")
+        elif player_sprite.center_y > SCREEN_HEIGHT:
+            return (self.up, "up")
+        elif player_sprite.center_y < 0:
+            return (self.down, "down")
