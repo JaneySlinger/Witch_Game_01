@@ -1,20 +1,12 @@
 import arcade
 import random
-# import witch
-# from sprite import Sprite
 from area import Area
 from inventory import InventoryView
 
 SCREEN_WIDTH = 1024
 SCREEN_HEIGHT = 640
-HERB_COUNT = 10
 WIN_SCORE = 7
-TREE_COUNT = 10
-SPRITE_SCALING_WITCH = 1.0
-SPRITE_SCALING_HERB = 1.0
-SPRITE_SCALING_TREE = 2.5
 MOVEMENT_SPEED = 5
-SPRITE_SIZE_TREE = int(32 * SPRITE_SCALING_TREE)
 TILE_SCALING = 1
 
 
@@ -33,7 +25,7 @@ class WitchGame(arcade.View):
 
         # set up the player
         self.player_sprite = arcade.Sprite(
-            "../sprites/Witch_Sprite/witch_front.png", SPRITE_SCALING_WITCH)
+            "../sprites/Witch_Sprite/witch_front.png", TILE_SCALING)
         self.player_sprite.center_x = 100  # starting position
         self.player_sprite.center_y = 300
 
