@@ -32,10 +32,15 @@ class WitchGame(arcade.View):
         self.player_list.append(self.player_sprite)
 
         self.areas = []
-        area = Area()
-        area.setup_area(map_name="../maps/map1.tmx", wall_layer="walls2",
-                        items_layer="items", background_layer="background")
+        area = Area(name="forest1", up=None, down=None,
+                    left=None, right="forest2")
+        area.setup_area("../maps/map1.tmx")
         self.areas.append(area)
+
+        area2 = Area(name="forest2", up=None, down=None,
+                     left="forest1", right=None)
+        area2.setup_area("../maps/map2.tmx")
+        self.areas.append(area2)
 
         self.current_area = 0
 
@@ -66,6 +71,19 @@ class WitchGame(arcade.View):
 
             arcade.play_sound(self.item_collect_sound)
             self.score += 1
+
+        # Do some logic here to figure out what room we are in, and if we need to go
+        # to a different room.
+        if self.player_sprite.center_x > SCREEN_WIDTH and self.current_area == 0:
+            self.current_area = 1
+            self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite,
+                                                             self.areas[self.current_area].tree_list)
+            self.player_sprite.center_x = 0
+        elif self.player_sprite.center_x < 0 and self.current_area == 1:
+            self.current_area = 0
+            self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite,
+                                                             self.areas[self.current_area].tree_list)
+            self.player_sprite.center_x = SCREEN_WIDTH
 
         self.physics_engine.update()
 

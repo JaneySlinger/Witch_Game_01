@@ -5,14 +5,24 @@ TILE_SCALING = 1
 class Area:
     """Information about different 'rooms' in the game"""
 
-    def __init__(self):
+    def __init__(self, name, up, down, left, right):
+        self.name = name
         # lists for coins, walls, monsters, etc
         self.tree_list = None
         self.item_list = None
         # holds backgrounds images. Can delete if don't want changing backgrounds.
         self.background = None
+        # set up which areas are to the top, bottom, left, and right of the current area
+        self.up = up
+        self.down = down
+        self.left = left
+        self.right = right
 
-    def setup_area(self, map_name, wall_layer, items_layer, background_layer):
+        wall_layer = "walls"
+        items_layer = "items"
+        background_layer = "background"
+
+    def setup_area(self, map_name):
         self.tree_list = arcade.SpriteList()
         self.item_list = arcade.SpriteList()
         self.background_list = arcade.SpriteList()
@@ -20,8 +30,20 @@ class Area:
         # load in tiled map
         map = arcade.tilemap.read_tmx(map_name)
         self.tree_list = arcade.tilemap.process_layer(
-            map, wall_layer, TILE_SCALING)
+            map, self.wall_layer, TILE_SCALING)
         self.item_list = arcade.tilemap.process_layer(
-            map, items_layer, TILE_SCALING)
+            map, self.items_layer, TILE_SCALING)
         self.background_list = arcade.tilemap.process_layer(
-            map, background_layer, TILE_SCALING)
+            map, self.background_layer, TILE_SCALING)
+
+    def get_next_room_name(self, player_sprite):
+        # Do some logic here to figure out what room we are in, and if we need to go
+        # to a different room.
+        if self.player_sprite.center_x > SCREEN_WIDTH:  # you need to go right
+            return self.right
+        elif self.player_sprite.center_x < SCREEN_WIDTH:
+            return self.left
+        elif self.player_sprite.center_y > SCREEN_HEIGHT:
+            return self.up
+        elif self.player_sprite.center_y < SCREEN_HEIGHT:
+            return self.down
