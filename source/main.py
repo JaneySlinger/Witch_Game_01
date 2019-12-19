@@ -2,6 +2,7 @@ import arcade
 import random
 # import witch
 # from sprite import Sprite
+from area import Area
 
 SCREEN_WIDTH = 1024
 SCREEN_HEIGHT = 640
@@ -14,44 +15,6 @@ SPRITE_SCALING_TREE = 2.5
 MOVEMENT_SPEED = 5
 SPRITE_SIZE_TREE = int(32 * SPRITE_SCALING_TREE)
 TILE_SCALING = 1
-
-
-class Area:
-    """Information about different 'rooms' in the game"""
-
-    def __init__(self):
-        # lists for coins, walls, monsters, etc
-        self.tree_list = None
-        self.item_list = None
-        # holds backgrounds images. Can delete if don't want changing backgrounds.
-        self.background = None
-
-
-def setup_area_1():
-    """create and return area 1."""
-    area = Area()
-
-    area.tree_list = arcade.SpriteList()
-    area.item_list = arcade.SpriteList()
-    area.background_list = arcade.SpriteList()
-
-    # load in tiled map
-    map_name = "../maps/map1.tmx"
-    platforms_layer_name = 'walls2'
-    items_layer_name = 'items'
-    background_layer_name = 'background'
-
-    my_map = arcade.tilemap.read_tmx(map_name)
-
-    area.tree_list = arcade.tilemap.process_layer(
-        my_map, platforms_layer_name, TILE_SCALING)
-
-    area.item_list = arcade.tilemap.process_layer(
-        my_map, items_layer_name, TILE_SCALING)
-
-    area.background_list = arcade.tilemap.process_layer(
-        my_map, background_layer_name, TILE_SCALING)
-    return area
 
 
 class WitchGame(arcade.View):
@@ -76,7 +39,9 @@ class WitchGame(arcade.View):
         self.player_list.append(self.player_sprite)
 
         self.areas = []
-        area = setup_area_1()
+        area = Area()
+        area.setup_area(map_name="../maps/map1.tmx", wall_layer="walls2",
+                        items_layer="items", background_layer="background")
         self.areas.append(area)
 
         self.current_area = 0
