@@ -28,15 +28,23 @@ class Area:
         self.tree_list = arcade.SpriteList()
         self.item_list = arcade.SpriteList()
         self.background_list = arcade.SpriteList()
+        self.door_list = arcade.SpriteList()
 
         # load in tiled map
         map = arcade.tilemap.read_tmx(map_name)
         self.tree_list = arcade.tilemap.process_layer(
             map, self.wall_layer, TILE_SCALING)
-        self.item_list = arcade.tilemap.process_layer(
-            map, self.items_layer, TILE_SCALING)
+
         self.background_list = arcade.tilemap.process_layer(
             map, self.background_layer, TILE_SCALING)
+
+        if (arcade.tilemap.get_tilemap_layer(map, self.items_layer) != None):
+            self.item_list = arcade.tilemap.process_layer(
+                map, self.items_layer, TILE_SCALING)
+        if (arcade.tilemap.get_tilemap_layer(map, "door") != None):
+            # the map in question has a door on it
+            self.door_list = arcade.tilemap.process_layer(
+                map, "door", TILE_SCALING)
 
     def get_next_room_name(self, player_sprite):
         # Do some logic here to figure out what room we are in, and if we need to go
