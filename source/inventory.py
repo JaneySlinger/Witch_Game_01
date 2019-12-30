@@ -7,6 +7,9 @@ class InventoryView(arcade.View):
         super().__init__()
         self.game_view = game_view
 
+    def set_return_view(self, return_view):
+        self.return_view = return_view
+
     def on_draw(self):
         arcade.start_render()
         items = self.game_view.found_items
@@ -34,4 +37,6 @@ class InventoryView(arcade.View):
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.ESCAPE:
-            self.window.show_view(self.game_view)
+            # how do I know which view to return it to. It could be the interior one.
+            # self.window.show_view(self.game_view)
+            self.window.show_view(self.return_view)

@@ -21,6 +21,8 @@ class WitchGame(arcade.View):
         self.item_collect_sound = arcade.load_sound("../sounds/fire_spell.wav")
         self.win_sound = arcade.load_sound("../sounds/win_sound.wav")
 
+        self.inventory = InventoryView(self)
+
         # set up the score
         self.score = 0
 
@@ -91,7 +93,8 @@ class WitchGame(arcade.View):
             # the witch hut interior
             self.player_sprite.center_x = 450
             self.player_sprite.center_y = 230
-            interior = InteriorView(self.player_sprite, self)
+            interior = InteriorView(
+                self.player_sprite, self, self.inventory)
             self.window.show_view(interior)
 
         next_room_check = self.areas[self.current_area].get_next_room_name(
@@ -126,8 +129,9 @@ class WitchGame(arcade.View):
         elif key == arcade.key.RIGHT or key == arcade.key.D:
             self.player_sprite.change_x = MOVEMENT_SPEED
         elif key == arcade.key.ESCAPE:
-            inventory = InventoryView(self)
-            self.window.show_view(inventory)
+            #inventory = InventoryView(self)
+            self.inventory.set_return_view(self)
+            self.window.show_view(self.inventory)
 
     def on_key_release(self, key, modifiers):
         """called whenever user releases a key"""

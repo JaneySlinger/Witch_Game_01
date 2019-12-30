@@ -4,9 +4,10 @@ MOVEMENT_SPEED = 5
 
 
 class InteriorView(arcade.View):
-    def __init__(self, player, game_view):
+    def __init__(self, player, game_view, inventory_view):
         super().__init__()
         self.game_view = game_view
+        self.inventory_view = inventory_view
         self.player = player
         int_map = arcade.tilemap.read_tmx("../maps/witch_hut_interior.tmx")
 
@@ -61,8 +62,9 @@ class InteriorView(arcade.View):
 
         elif key == arcade.key.RIGHT or key == arcade.key.D:
             self.player.change_x = MOVEMENT_SPEED
-        # elif key == arcade.key.ESCAPE:
-            # self.game_view.window.show_view(inventory)
+        elif key == arcade.key.ESCAPE:
+            self.inventory_view.set_return_view(self)
+            self.window.show_view(self.inventory_view)
 
     def on_key_release(self, key, modifiers):
         """called whenever user releases a key"""
