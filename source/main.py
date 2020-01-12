@@ -70,13 +70,15 @@ class WitchGame(arcade.View):
             self.player_sprite, self.areas[self.current_area].tree_list)
 
         # set up the quests
-        # need to rethink the requirements one
-        items_from_area = self.areas[self.area_refs['forest1']]
+        items_from_area = self.areas[self.area_refs['forest1']].item_textures
+        self.quests = []
 
         self.bookQuest = Quest(
             text="Find a potion recipe book.", textures=items_from_area, items=[BOOK])
+        self.quests.append(self.bookQuest)
         self.ingredientsQuest = Quest(text="Find the ingredients for the potion.",
                                       textures=items_from_area, items=[RED, BLUE, BLACK])
+        self.quests.append(self.ingredientsQuest)
 
     def on_draw(self):
         """Render the screen"""
@@ -101,6 +103,8 @@ class WitchGame(arcade.View):
             print(item.texture)
             self.found_items.append(item)
             self.areas[self.current_area].item_list.remove(item)
+            for quest in self.quests:
+                quest.updateStatus(item.texture)
 
             # arcade.play_sound(self.item_collect_sound)
             self.score += 1

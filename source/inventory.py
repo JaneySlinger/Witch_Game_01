@@ -50,10 +50,19 @@ class InventoryView(arcade.View):
             vertical += 50
 
         x_variable = (SCREEN_WIDTH / 2) + 50
-        arcade.draw_text("Find a potion recipe book", x_variable, SCREEN_HEIGHT - 100, arcade.color.BLACK, 20,
+        quests = self.game_view.quests
+        if quests[0].complete:
+            text_colour = arcade.color.GREEN
+        else:
+            text_colour = arcade.color.BLACK
+        arcade.draw_text(quests[0].text, x_variable, SCREEN_HEIGHT - 100, text_colour, 20,
                          align="left", anchor_x="left", anchor_y="center"
                          )
-        arcade.draw_text("Find the ingredients for the potion", x_variable, SCREEN_HEIGHT - 150, arcade.color.BLACK, 20,
+        if quests[1].complete:
+            text_colour = arcade.color.GREEN
+        else:
+            text_colour = arcade.color.BLACK
+        arcade.draw_text(quests[1].text, x_variable, SCREEN_HEIGHT - 150, text_colour, 20,
                          align="left", anchor_x="left", anchor_y="center"
                          )
         arcade.draw_text("Add the ingredients to the cauldron", x_variable, SCREEN_HEIGHT - 200, arcade.color.BLACK, 20,
