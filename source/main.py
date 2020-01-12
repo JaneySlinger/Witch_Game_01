@@ -3,12 +3,21 @@ import random
 from area import Area
 from inventory import InventoryView
 from interior import InteriorView
+from quest import Quest
 
 SCREEN_WIDTH = 1024
 SCREEN_HEIGHT = 640
 WIN_SCORE = 7
 MOVEMENT_SPEED = 5
 TILE_SCALING = 1
+
+RED = 0
+BLACK = 1
+GREEN = 2
+PURPLE = 3
+BOOK = 4
+YELLOW = 5
+BLUE = 6
 
 
 class WitchGame(arcade.View):
@@ -60,6 +69,15 @@ class WitchGame(arcade.View):
         self.physics_engine = arcade.PhysicsEngineSimple(
             self.player_sprite, self.areas[self.current_area].tree_list)
 
+        # set up the quests
+        # need to rethink the requirements one
+        items_from_area = self.areas[self.area_refs['forest1']]
+
+        self.bookQuest = Quest(
+            text="Find a potion recipe book.", textures=items_from_area, items=[BOOK])
+        self.ingredientsQuest = Quest(text="Find the ingredients for the potion.",
+                                      textures=items_from_area, items=[RED, BLUE, BLACK])
+
     def on_draw(self):
         """Render the screen"""
         arcade.start_render()
@@ -69,7 +87,7 @@ class WitchGame(arcade.View):
         self.areas[self.current_area].tree_list.draw()
         self.areas[self.current_area].door_list.draw()
         if(self.score == WIN_SCORE):
-            arcade.play_sound(self.win_sound)
+            # arcade.play_sound(self.win_sound)
             arcade.draw_text("You won!", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, arcade.color.BLACK, 24,
                              align="center", anchor_x="center", anchor_y="center"
                              )
@@ -80,10 +98,11 @@ class WitchGame(arcade.View):
         item_hit_list = arcade.check_for_collision_with_list(
             self.player_sprite, self.areas[self.current_area].item_list)
         for item in item_hit_list:
+            print(item.texture)
             self.found_items.append(item)
             self.areas[self.current_area].item_list.remove(item)
 
-            arcade.play_sound(self.item_collect_sound)
+            # arcade.play_sound(self.item_collect_sound)
             self.score += 1
 
         door_hit_list = arcade.check_for_collision_with_list(

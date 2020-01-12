@@ -14,6 +14,7 @@ class Area:
         self.item_list = None
         # holds backgrounds images. Can delete if don't want changing backgrounds.
         self.background = None
+        self.item_textures = []
         # set up which areas are to the top, bottom, left, and right of the current area
         self.up = up
         self.down = down
@@ -41,6 +42,9 @@ class Area:
         if (arcade.tilemap.get_tilemap_layer(map, self.items_layer) != None):
             self.item_list = arcade.tilemap.process_layer(
                 map, self.items_layer, TILE_SCALING)
+            for item in self.item_list:
+                self.item_textures.append(item.texture)
+            print(self.item_textures)
         if (arcade.tilemap.get_tilemap_layer(map, "door") != None):
             # the map in question has a door on it
             self.door_list = arcade.tilemap.process_layer(
