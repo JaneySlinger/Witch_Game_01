@@ -8,4 +8,4 @@ Controls:
 
 A full demo of the game can be found in the repository. 
 A short gif demo is found below: 
-![Witch Game Demo](../gif_demo.gif)
+![Witch Game Demo](/gif_demo.gif)
