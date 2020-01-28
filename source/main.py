@@ -7,7 +7,6 @@ from quest import Quest
 
 SCREEN_WIDTH = 1024
 SCREEN_HEIGHT = 640
-WIN_SCORE = 7
 MOVEMENT_SPEED = 5
 TILE_SCALING = 1
 
@@ -31,9 +30,6 @@ class WitchGame(arcade.View):
         self.win_sound = arcade.load_sound("../sounds/win_sound.wav")
 
         self.inventory = InventoryView(self)
-
-        # set up the score
-        self.score = 0
 
         # set up the player
         self.player_sprite = arcade.Sprite(
@@ -88,11 +84,10 @@ class WitchGame(arcade.View):
         self.areas[self.current_area].item_list.draw()
         self.areas[self.current_area].tree_list.draw()
         self.areas[self.current_area].door_list.draw()
-        if(self.score == WIN_SCORE):
-            # arcade.play_sound(self.win_sound)
-            arcade.draw_text("You won!", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, arcade.color.BLACK, 24,
-                             align="center", anchor_x="center", anchor_y="center"
-                             )
+        # arcade.play_sound(self.win_sound)
+        arcade.draw_text("You won!", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, arcade.color.BLACK, 24,
+                         align="center", anchor_x="center", anchor_y="center"
+                         )
 
     def update(self, delta_time):
         """ All the logic to move, and the game logic goes here"""
@@ -107,7 +102,6 @@ class WitchGame(arcade.View):
                 quest.updateStatus(item.texture)
 
             # arcade.play_sound(self.item_collect_sound)
-            self.score += 1
 
         door_hit_list = arcade.check_for_collision_with_list(
             self.player_sprite, self.areas[self.current_area].door_list)

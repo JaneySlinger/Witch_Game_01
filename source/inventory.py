@@ -41,31 +41,27 @@ class InventoryView(arcade.View):
                          align="left", anchor_x="left", anchor_y="center"
                          )
 
-        # draw the icons for the quests
-        vertical = 100
-        for i in range(0, NUMBER_OF_QUESTS):
-            arcade.draw_text("-", SCREEN_WIDTH / 2, SCREEN_HEIGHT - vertical, arcade.color.BLACK, 20,
-                             align="left", anchor_x="left", anchor_y="center"
-                             )
-            vertical += 50
-
         x_variable = (SCREEN_WIDTH / 2) + 50
         quests = self.game_view.quests
         if quests[0].complete:
             text_colour = arcade.color.GREEN
+            icon = "X "
         else:
             text_colour = arcade.color.BLACK
-        arcade.draw_text(quests[0].text, x_variable, SCREEN_HEIGHT - 100, text_colour, 20,
+            icon = "- "
+        arcade.draw_text(icon + quests[0].text, x_variable, SCREEN_HEIGHT - 100, text_colour, 20,
                          align="left", anchor_x="left", anchor_y="center"
                          )
         if quests[1].complete:
             text_colour = arcade.color.GREEN
+            icon = "X "
         else:
             text_colour = arcade.color.BLACK
-        arcade.draw_text(quests[1].text, x_variable, SCREEN_HEIGHT - 150, text_colour, 20,
+            icon = "- "
+        arcade.draw_text(icon + quests[1].text, x_variable, SCREEN_HEIGHT - 200, text_colour, 20,
                          align="left", anchor_x="left", anchor_y="center"
                          )
-        arcade.draw_text("Add the ingredients to the cauldron", x_variable, SCREEN_HEIGHT - 200, arcade.color.BLACK, 20,
+        arcade.draw_text("Add the ingredients to the cauldron", x_variable, SCREEN_HEIGHT - 300, arcade.color.BLACK, 20,
                          align="left", anchor_x="left", anchor_y="center"
                          )
 
