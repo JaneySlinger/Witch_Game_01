@@ -1,0 +1,11 @@
+textures:
+for forest1:    book is the 5th in the texture list [4]
+                red is 1st [0]
+                blue is 7th [6]
+                green is 3rd [2]
+                yellow is 6th [5]
+                purple is 4th [3]
+                black is 2nd [1]
+
+
+[self.areas[self.area_refs['forest1']].item_textures[4]]
