@@ -1,6 +1,9 @@
 import arcade
+from win import WinView
 TILE_SCALING = 1
 MOVEMENT_SPEED = 5
+SCREEN_WIDTH = 1024
+SCREEN_HEIGHT = 640
 
 
 class InteriorView(arcade.View):
@@ -23,6 +26,8 @@ class InteriorView(arcade.View):
             int_map, "bubbles", TILE_SCALING)
         self.door_list = arcade.tilemap.process_layer(
             int_map, "door", TILE_SCALING)
+        self.cauldron_list = arcade.tilemap.process_layer(
+            int_map, "cauldron", TILE_SCALING)
 
         self.physics_engine = arcade.PhysicsEngineSimple(
             self.player, self.wall_list)
@@ -33,8 +38,10 @@ class InteriorView(arcade.View):
         self.background_list.draw()
         self.objects_list.draw()
         self.potion_list.draw()
+        self.cauldron_list.draw()
         self.bubbles_list.draw()
         self.door_list.draw()
+
         self.player.draw()
 
     def update(self, delta_time):
@@ -48,6 +55,23 @@ class InteriorView(arcade.View):
             self.player.center_x = 500
             self.player.center_y = 350
             self.window.show_view(self.game_view)
+
+        arcade.draw_text("Spook!", 512, 320, arcade.color.WHITE, 24,
+                         align="center", anchor_x="center", anchor_y="center"
+                         )
+
+        cauldron_hit_list = arcade.check_for_collision_with_list(
+            self.player, self.cauldron_list)
+        for item in cauldron_hit_list:
+            print("collided")
+            if all(quest.complete == True for quest in self.game_view.quests):
+                # if the previous quests are complete
+
+                arcade.draw_text("You won!", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, arcade.color.WHITE, 24,
+                                 align="center", anchor_x="center", anchor_y="center"
+                                 )
+                win = WinView()
+                self.window.show_view(win)
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed"""

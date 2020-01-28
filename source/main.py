@@ -27,7 +27,6 @@ class WitchGame(arcade.View):
         self.player_list = arcade.SpriteList()
         self.found_items = arcade.SpriteList()
         self.item_collect_sound = arcade.load_sound("../sounds/fire_spell.wav")
-        self.win_sound = arcade.load_sound("../sounds/win_sound.wav")
 
         self.inventory = InventoryView(self)
 
@@ -84,10 +83,6 @@ class WitchGame(arcade.View):
         self.areas[self.current_area].item_list.draw()
         self.areas[self.current_area].tree_list.draw()
         self.areas[self.current_area].door_list.draw()
-        # arcade.play_sound(self.win_sound)
-        arcade.draw_text("You won!", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, arcade.color.BLACK, 24,
-                         align="center", anchor_x="center", anchor_y="center"
-                         )
 
     def update(self, delta_time):
         """ All the logic to move, and the game logic goes here"""
@@ -146,7 +141,6 @@ class WitchGame(arcade.View):
         elif key == arcade.key.RIGHT or key == arcade.key.D:
             self.player_sprite.change_x = MOVEMENT_SPEED
         elif key == arcade.key.ESCAPE:
-            #inventory = InventoryView(self)
             self.inventory.set_return_view(self)
             self.window.show_view(self.inventory)
 
