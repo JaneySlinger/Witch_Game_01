@@ -56,20 +56,11 @@ class InteriorView(arcade.View):
             self.player.center_y = 350
             self.window.show_view(self.game_view)
 
-        arcade.draw_text("Spook!", 512, 320, arcade.color.WHITE, 24,
-                         align="center", anchor_x="center", anchor_y="center"
-                         )
-
         cauldron_hit_list = arcade.check_for_collision_with_list(
             self.player, self.cauldron_list)
         for item in cauldron_hit_list:
-            print("collided")
             if all(quest.complete == True for quest in self.game_view.quests):
                 # if the previous quests are complete
-
-                arcade.draw_text("You won!", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, arcade.color.WHITE, 24,
-                                 align="center", anchor_x="center", anchor_y="center"
-                                 )
                 win = WinView()
                 self.window.show_view(win)
 

@@ -11,7 +11,7 @@ class WinView(arcade.View):
         arcade.start_render()
         arcade.set_background_color(arcade.color.ASH_GREY)
 
-        arcade.draw_text("You win!", SCREEN_WIDTH / 2, SCREEN_HEIGHT - 50, arcade.color.BLACK, 24,
+        arcade.draw_text("You win!", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, arcade.color.BLACK, 24,
                          align="left", anchor_x="left", anchor_y="center"
                          )
         self.win_sound = arcade.load_sound("../sounds/win_sound.wav")
